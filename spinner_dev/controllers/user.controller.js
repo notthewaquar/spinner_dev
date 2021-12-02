@@ -13,3 +13,10 @@ exports.adminBoard = (req, res) => {
 exports.moderatorBoard = (req, res) => {
   res.status(200).send("Moderator Content.");
 };
+
+// report 
+exports.userReport = (req, res) => {
+  const userId = req.userId;
+
+  res.status(200).send("User Content." + userId);
+};

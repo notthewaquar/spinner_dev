@@ -8,11 +8,11 @@ const db = require('./models/index');
 const Role = db.role;
 const User = db.user;
 
-db.sequelize.sync({force: true}).then(() => {
-  console.log('Drop and Resync Db');
-  initial();
-  testUsers();
-});
+// db.sequelize.sync({force: true}).then(() => {
+//   console.log('Drop and Resync Db');
+//   initial();
+//   testUsers();
+// });
 
 function initial() {
   Role.create({ id: 1, name: "user" });
