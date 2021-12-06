@@ -24,6 +24,7 @@ verifyToken = (req, res, next) => {
       console.log(decoded);
       // user id attached to req
       req.userId = decoded.id;
+      req.role = decoded.authorities;
       next();
     });
   } catch (error) {

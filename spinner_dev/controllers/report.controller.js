@@ -1,3 +1,6 @@
+const db = require('../models');
+const Report = db.report;
+
 exports.allAccess = (req, res) => {
   res.status(200).send("Public Content.");
 };
@@ -16,11 +19,8 @@ exports.moderatorBoard = (req, res) => {
 
 // report 
 exports.userReport = (req, res) => {
-  return res.json({
-    userId: req.userId,
-    role: req.role
-  })
   const userId = req.userId;
+
 
   res.status(200).send("User Content." + userId);
 };

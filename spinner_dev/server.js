@@ -11,7 +11,7 @@ const User = db.user;
 // db.sequelize.sync({force: true}).then(() => {
 //   console.log('Drop and Resync Db');
 //   initial();
-//   testUsers();
+//   // testUsers();
 // });
 
 function initial() {
@@ -20,12 +20,12 @@ function initial() {
   Role.create({ id: 3, name: "admin" });
 }
 
-var bcrypt = require('bcryptjs');
 function testUsers() {
-  User.create({ username: 'abdul', email: 'abdul@gmail.com', password: bcrypt.hashSync('123456', 8) });
-  User.create({ username: 'rishav', email: 'rishav@gmail.com', password: bcrypt.hashSync('123456', 8) });
-  User.create({ username: 'vikrant', email: 'vikrant@gmail.com', password: bcrypt.hashSync('123456', 8) });
-  User.create({ username: 'rohit', email: 'rohit@gmail.com', password: bcrypt.hashSync('123456', 8) });
+  var bcrypt = require('bcryptjs');
+  // User.create({ username: 'abdul', email: 'abdul@gmail.com', password: bcrypt.hashSync('123456', 8) });
+  // User.create({ username: 'rishav', email: 'rishav@gmail.com', password: bcrypt.hashSync('123456', 8) });
+  // User.create({ username: 'vikrant', email: 'vikrant@gmail.com', password: bcrypt.hashSync('123456', 8) });
+  // User.create({ username: 'rohit', email: 'rohit@gmail.com', password: bcrypt.hashSync('123456', 8) });
 }
 
 var corsOptions = {
@@ -58,3 +58,9 @@ app.listen(PORT, () => {
 
 // https://www.bezkoder.com/node-js-jwt-authentication-mysql/
 // https://sequelize.org/master/manual/model-basics.html
+
+
+// return res.json({
+//   userId: req.userId,
+//   role: req.role
+// })

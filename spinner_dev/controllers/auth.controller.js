@@ -8,8 +8,33 @@ const Op = db.Sequelize.Op;
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 
+// normal user
 exports.signup = (req, res) => {
-  // Save User to Database
+  const userRole = 'user'
+  User.create({
+    username: req.body.username,
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password, 8)
+  })
+    .then(user => {
+      Role.findAll({
+        where: {
+          name: userRole
+        }
+      }).then(roles => {
+        user.setRoles(roles).then(() => {
+          res.send({ message: 'User was registered successfully!' });
+        });
+      });
+    })
+    .catch(err => {
+      res.status(500).send({ message: err.message });
+    });
+};
+
+// normal user
+exports.signupUserOrModerator = (req, res) => {
+
   User.create({
     username: req.body.username,
     email: req.body.email,
@@ -19,20 +44,15 @@ exports.signup = (req, res) => {
       if (req.body.roles) {
         Role.findAll({
           where: {
-            name: {
-              [Op.or]: req.body.roles
-            }
+            name: req.body.roles
           }
         }).then(roles => {
           user.setRoles(roles).then(() => {
-            res.send({ message: 'User was registered successfully!' });
+            res.send({ message: req.body.roles + ' was registered successfully!' });
           });
         });
       } else {
-        // user role = 1
-        user.setRoles([1]).then(() => {
-          res.send({ message: 'User was registered successfully!' });
-        });
+        res.send({ message: 'Cannot create user' });
       }
     })
     .catch(err => {
@@ -43,7 +63,7 @@ exports.signup = (req, res) => {
 exports.signin = (req, res) => {
   User.findOne({
     where: {
-      username: req.body.username
+      email: req.body.username
     }
   })
     .then(user => {
@@ -63,28 +83,32 @@ exports.signin = (req, res) => {
         });
       }
 
-      var authorities = [];
       user.getRoles().then(roles => {
-        for (let i = 0; i < roles.length; i++) {
-          authorities.push('ROLE_' + roles[i].name.toUpperCase());
-        }
-        var token = jwt.sign(
-          {
-            id: user.id,
-            authorities
-          },
-          config.secret, {
-          expiresIn: 86400 // 24 hours
-        });
+        // return res.send(roles)
+        if (roles.length === 1) {
+          const authorities = roles[0].name.toUpperCase();
+          var token = jwt.sign(
+            {
+              id: user.id,
+              authorities
+            },
+            config.secret, {
+              expiresIn: 86400 // 24 hours
+            }
+          );
 
-        res.status(200).send({
-          // id: user.id,
-          // username: user.username,
-          // email: user.email,
-          // roles: authorities,
-          accessToken: token,
-          response: 'Signed in'
-        });
+          res.status(200).send({
+            // id: user.id,
+            // username: user.username,
+            // email: user.email,
+            roles: authorities,
+            accessToken: token,
+            response: 'Signed In Successfully'
+          });
+        } else {
+          res.status(401).send({ message: 'Unauthorized' });
+        }
+
       });
     })
     .catch(err => {
